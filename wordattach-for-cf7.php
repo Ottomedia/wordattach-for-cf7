@@ -1,3 +1,4 @@
+<?php
 /*
  * Plugin Name:       WordAttach for cf7
  * Plugin URI:        https://bitbucket.org/ottomedia/wordattach-for-cf7/
