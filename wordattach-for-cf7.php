@@ -19,6 +19,7 @@ add_action('wpcf7_before_send_mail', 'cv_word_doc');
 function cv_word_doc($WPCF7_ContactForm) {
 
 	// error_log( 'Istanza ' . var_export( $WPCF7_ContactForm, true ) );
+
 	$template_dir = wp_upload_dir();
 	$template_dir = $template_dir['basedir'] . '/wpcf7-templates/';
 
@@ -58,6 +59,44 @@ function cv_word_doc($WPCF7_ContactForm) {
 				}
 			}
 
+			// Transform uppercase fields according to directives
+			$uppercase_directives = $wpcf7->additional_setting('wt_uppercase', 100);
+			foreach( $uppercase_directives as $key){
+				$key = str_replace( '[', '', $key );
+				$key = str_replace( ']', '', $key );
+				$data[$key] = strtoupper($data[$key]);
+			}
+			// Transform lowercase fields according to directives
+			$lowercase_directives = $wpcf7->additional_setting('wt_lowercase', 100);
+			foreach( $lowercase_directives as $key){
+				$key = str_replace( '[', '', $key );
+				$key = str_replace( ']', '', $key );
+				$data[$key] = strtolower($data[$key]);
+			}
+			$ucfirst_directives = $wpcf7->additional_setting('wt_ucfirst', 100);
+			foreach( $ucfirst_directives as $key){
+				$key = str_replace( '[', '', $key );
+				$key = str_replace( ']', '', $key );
+				$data[$key] = ucfirst($data[$key]);
+			}
+			$ucwords_directives = $wpcf7->additional_setting('wt_ucwords', 100);
+			foreach( $ucwords_directives as $key){
+				$key = str_replace( '[', '', $key );
+				$key = str_replace( ']', '', $key );
+				$data[$key] = ucwords($data[$key]);
+			}
+
+			// Format date
+			$format_date_directives = $wpcf7->additional_setting('wt_format_date', 100);
+			foreach( $format_date_directives as $key){
+				$key = str_replace( '[', '', $key );
+				$key = str_replace( ']', '', $key );
+				$info = explode( "|", $key );
+				$key = $info[0];
+				$format = $info[1];
+				$data[$key] = date( $format, strtotime($data[$key]));
+			}
+
 			// PHPWord stuff...
 			$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_dir . $template_name );
 
@@ -65,7 +104,18 @@ function cv_word_doc($WPCF7_ContactForm) {
 
 			// setup upload directory and name the file
 			$upload_dir = $template_dir . 'merged/';
-			$fileName = 'documento-' . time() .'.docx';
+
+			$default_filename = 'document-' . time() . '-' . wp_date( get_option( 'date_format' ), time() );
+			$default_filename = sanitize_file_name( $default_filename );
+
+			$fileName = $default_filename;
+
+			if(!empty($wpcf7->pref('wt_filename'))){
+				$file = sanitize_file_name( wpcf7_mail_replace_tags( $wpcf7->pref('wt_filename') ) );
+				if( !empty( $file ) ) $fileName = $file;
+			}
+
+			$fileName .= '.docx';
 
 			$templateProcessor->saveAs( $upload_dir . $fileName );
 
