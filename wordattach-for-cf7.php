@@ -18,12 +18,15 @@ function autoload_library(){
 add_action('wpcf7_before_send_mail', 'cv_word_doc');
 function cv_word_doc($WPCF7_ContactForm) {
 
+	// error_log( 'Istanza ' . var_export( $WPCF7_ContactForm, true ) );
 	$template_dir = wp_upload_dir();
 	$template_dir = $template_dir['basedir'] . '/wpcf7-templates/';
 
 	$template_name = 'template-form-' . $WPCF7_ContactForm->id() . '.docx';
 
 	if( file_exists( $template_dir . $template_name ) ) {
+
+	// error_log( 'form id' . var_export( $WPCF7_ContactForm->id(), true ) );
 
 		//Get current form
 		$wpcf7 = WPCF7_ContactForm::get_current();
@@ -39,6 +42,21 @@ function cv_word_doc($WPCF7_ContactForm) {
 			// nothing's here... do nothing...
 			if (empty($data))
 				return;
+
+			// error_log( 'DATA: ' . var_export( $data, true ) );
+
+			// TemplateProcessor can only substitute strings. But CF7's dropdowns, checkboxes, etc sends arrays
+			// here we implode them.
+			foreach($data as $key=>$item){
+				if( is_array( $item ) ){
+					if( count( $item ) == 1 ){
+						$data[$key] = $item[0];
+					}
+					else{
+						$data[$key] = implode( ', ', $item );
+					}
+				}
+			}
 
 			// PHPWord stuff...
 			$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_dir . $template_name );
