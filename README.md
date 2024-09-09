@@ -43,7 +43,10 @@ E' possibile allegare file che vengono inviati via email così come sono, senza 
 Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
 
 ## Changelog ##
-1.0.0 
+
+- 1.1.1 - Enable automatic updates
+- 1.1.0 - Add formatting directives
+- 1.0.0 - Initial release
 
 ## todo ##
 1. cartella arbitraria per caricare i template

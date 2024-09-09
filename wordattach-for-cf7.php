@@ -1,16 +1,25 @@
 <?php
 /*
  * Plugin Name:       WordAttach for cf7
+ * Description:		  Fills Word templates with form data and send them via email
  * Plugin URI:        https://bitbucket.org/ottomedia/wordattach-for-cf7/
  * Requires at least: 6.5
  * Requires PHP:      8.0
  * Author:            Stefano Garuti
  * Requires Plugins:  contact-form-7
- * Version:           1.1.0
+ * Version:           1.1.1
  */
 
 add_action( 'plugins_loaded', 'autoload_library', 0 );
 function autoload_library(){
+	require (UACRM_ABSPATH . '/plugin-update-checker/plugin-update-checker.php');
+
+	$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+		'https://bitbucket.org/ottomedia/wordattach-for-cf7/',
+		__FILE__,
+		'wordattach-for-cf7'
+	);
+
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
