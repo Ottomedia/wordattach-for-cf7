@@ -6,7 +6,7 @@
  * Requires PHP:      8.0
  * Author:            Stefano Garuti
  * Requires Plugins:  contact-form-7
- * Version:           1.0.0
+ * Version:           1.1.0
  */
 
 add_action( 'plugins_loaded', 'autoload_library', 0 );
@@ -99,6 +99,9 @@ function cv_word_doc($WPCF7_ContactForm) {
 
 			// PHPWord stuff...
 			$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_dir . $template_name );
+
+			// In the templates let's search for tags delimited by [...]
+			// $templateProcessor->setMacroChars('[', ']'); /** BUG in phpWord waiting to be fixed */
 
 			$templateProcessor->setValues($data);
 

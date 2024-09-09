@@ -8,15 +8,6 @@ I file "compilati" vengono salvati temporaneamente in `wp-content/uploads/wpcf7-
 
 Al momento vengono allegati solo alla _Mail 1_ ... vediamo se abilitare l'invio ad entrambe con uno switch
 
-## todo ##
-1. cancellare i file "compilati" dalla cartella temporaneo dopo l'invio (magari mettere uno switch per decidere se farlo o no)
-2. creare le cartelle con il file .htaccess all'attivazione del plugin
-1. carta intestata centro / template personalizzato del centro
-1. multi template: ogni form può compilare più templates
-1. allega anche file "statici": [Già supportato da CF7](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
-1. cartella arbitraria per caricare i template
-1. cambiare i tag nei template da ${...} a [...]
-
 ## Personalizzare il nome del file generato ##
 
 Di default il nome del file generato è `document-XXXX-XX-XX-HH-MM-SS` dove `XXXX-XX-XX-HH-MM-SS` + la data e l'ora della creazione del file.
@@ -46,12 +37,29 @@ Il campo va scritto nel seguente modo:
 
 Il nome del tag data e il formato data sono separati dal simbolo `|` (pipe) e il formato della data è specificato usando i codici tipici della funzione [PHP date()](https://www.php.net/manual/en/datetime.format.php)
 
+## Allegare altri file "statici" ##
+E' possibile allegare file che vengono inviati via email così come sono, senza essere processati come templates.
+
+Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
+
+## Changelog ##
+1.0.0 
+
+## todo ##
+1. cartella arbitraria per caricare i template
+1. multi template: ogni form può compilare più templates
+1. cancellare i file "compilati" dalla cartella temporaneo dopo l'invio (magari mettere uno switch per decidere se farlo o no)
+2. creare le cartelle con il file .htaccess all'attivazione del plugin
+1. carta intestata centro / template personalizzato del centro
+1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
+1. cambiare i tag nei template da ${...} a [...] [Per un bug in PhpWord non si può fare]
+
 ## references ##
 [PHPWord](https://phpoffice.github.io/PHPWord/index.html)
 
 [Stack Excange reference](https://stackoverflow.com/questions/48189010/dynamically-attaching-file-to-contact-form-7-e-mail)
 
-## form object ##
+### form object ###
 ```php
 WPCF7_ContactForm::__set_state(array(
    'id' => 5,
