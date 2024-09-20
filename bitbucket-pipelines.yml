@@ -7,8 +7,8 @@ image: atlassian/default-image:2
 
 pipelines:
   branches:
-    # Execute change detection only on master branch
-    'master':
+    # Execute change detection only on main branch
+    'main':
       - step:
           #image: atlassian/default-image:2
           name: Run version change detection script
