@@ -13,4 +13,5 @@ Può essere utile per utilizzare i dati del form per compilare un modulo d\'ordi
 Per istruzioni su installazione, configurazione e utilizzo vai sulla [pagina di progetto](https://bitbucket.org/ottomedia/wordattach-for-cf7/src/main/README.md)
 
 == Changelog ==
+please see:
 [changelog](https://bitbucket.org/ottomedia/wordattach-for-cf7/src/main/CHANGELOG.md)
