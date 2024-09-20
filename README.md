@@ -1,10 +1,15 @@
-# Work in progress #
+# Cosa fa questo plugin #
+Il plugin permette di fare un "mail merge" dei dati di qualunque form di Contact Form 7 in un file di Word (che chiamiamo template) che viene poi inviato in allegato alla mail che CF7 invia.
 
-1. Crea il file "modello" in Word e salvalo col nome `template-form-_N_` dove _N_ è l'ID del form CF7 che raccoglie i dati per compilarlo
-1. Metti il file di word che fa da template nella cartella `wp-content/uploads/wpcf7-templates`. 
+Può essere utile per utilizzare i dati del form per compilare un modulo d'ordine, un formulario, un attesto ecc ecc.
 
+## Preparare il template ##
 
-I file "compilati" vengono salvati temporaneamente in `wp-content/uploads/wpcf7-templates/merged` e inviati via email.
+1. Scrivi il file "modello" in Word. In ogni punto in cui voui che venga inserito un campo di CF7 inserisci il segnaposto `${_nome_del_campo_CF7_}` (per esempio, per inserire il campo `[your-subject]` dovrai scrivere in Word `${your-subject})` 
+1. Salva il file col nome `template-form-_N_.docx` dove _N_ è l'ID del form CF7 che raccoglie i dati per compilarlo
+1. Metti il file di Word che fa da template nella cartella `wp-content/uploads/wpcf7-templates`. 
+
+Attenzione: i file generati vengono spediti per email e non vengono mantenuti sul server dopo l'invio
 
 Al momento vengono allegati solo alla _Mail 1_ ... vediamo se abilitare l'invio ad entrambe con uno switch
 
@@ -18,7 +23,7 @@ Es: `wt_filename: [your-subject]-{datetime}`
 
 La stringa può essere personalizzata usando qualunque tag del form CF7 oltre ai tag "special" già disponibili in CF7 quali _data di invio_ _ora di invio_ _titolo pagina_ ecc... [Vedi tutti i _tag speciali_ qui](https://contactform7.com/special-mail-tags/)
 
-Tutto il contenuto di `wt_filename:` viene filtrato per renderlo un nome di file valido (tolti gli spazi, i caratteri non validi ecc...)
+Tutto il contenuto di `wt_filename` viene filtrato per renderlo un nome di file valido (tolti gli spazi, i caratteri non validi ecc...)
 
 ## Convertire in maiuscolo e minuscolo un campo ##
 In _Impostazioni aggiuntive_ puoi indicare i campi di cui vuoi cambiare la capitalizzazione prima di inserirli nel template. Per esempio puoi scrivere `wt_uppercase: [codice_fiscale]` per avere tutto il codice fiscale maiuscolo, indipendentemente da come l'ha inserito l'utente.
@@ -42,17 +47,14 @@ E' possibile allegare file che vengono inviati via email così come sono, senza 
 
 Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
 
-## Changelog ##
+## Privacy ##
+I file "compilati" vengono salvati nella cartella di uploads temporanei di CF7 (di soli `wp-content/uploads/wpcf7_uploads`) in una sottocartella temporanea chiamata `wacf7_merged` e inviati via email. 
+Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file viene mantenuto sul server**
 
-- 1.1.2 - Bugfix in automatic updates
-- 1.1.1 - Enable automatic updates
-- 1.1.0 - Add formatting directives
-- 1.0.0 - Initial release
 
 ## todo ##
 1. cartella arbitraria per caricare i template
 1. multi template: ogni form può compilare più templates
-1. cancellare i file "compilati" dalla cartella temporaneo dopo l'invio (magari mettere uno switch per decidere se farlo o no)
 2. creare le cartelle con il file .htaccess all'attivazione del plugin
 1. carta intestata centro / template personalizzato del centro
 1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
