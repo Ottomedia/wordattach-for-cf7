@@ -7,12 +7,13 @@
  * Requires PHP:      8.0
  * Author:            Stefano Garuti
  * Requires Plugins:  contact-form-7
- * Version:           1.1.1
+ * Version:           1.1.2
  */
 
+ define( 'WACF7_ABSPATH', dirname( __FILE__ ) );
 add_action( 'plugins_loaded', 'autoload_library', 0 );
 function autoload_library(){
-	require (UACRM_ABSPATH . '/plugin-update-checker/plugin-update-checker.php');
+	require (WACF7_ABSPATH . '/plugin-update-checker/plugin-update-checker.php');
 
 	$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
 		'https://bitbucket.org/ottomedia/wordattach-for-cf7/',

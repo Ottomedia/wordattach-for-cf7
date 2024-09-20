@@ -44,6 +44,7 @@ Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https
 
 ## Changelog ##
 
+- 1.1.2 - Bugfix in automatic updates
 - 1.1.1 - Enable automatic updates
 - 1.1.0 - Add formatting directives
 - 1.0.0 - Initial release
