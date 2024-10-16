@@ -13,20 +13,36 @@ Attenzione: i file generati vengono spediti per email e non vengono mantenuti su
 
 Al momento vengono allegati solo alla _Mail 1_ ... vediamo se abilitare l'invio ad entrambe con uno switch
 
+## Utilizzare un template con nome e percorso a piacere ##
+
+E' possibile salvare il template anche in altre locazioni del server e dargli un nome personalizzato.
+
+Nella sezione _Impostazioni aggiuntive_ del form di CF7 puoi indicare il _path_ e il nome del file (ricordati di terminarlo con `.docx`) da utilizzare.
+
+Usa la direttiva `wt_template:` seguita dal path completo. 
+
+_Esempio_
+```
+wt_template: C:\Users\Mario\app\public\wp-content\uploads\2024\10\test-form.docx
+```
+
 ## Personalizzare il nome del file generato ##
 
 Di default il nome del file generato è `document-XXXX-XX-XX-HH-MM-SS` dove `XXXX-XX-XX-HH-MM-SS` + la data e l'ora della creazione del file.
 
-Il nome di può personalizzare aggiungendo una configurazione addizionale in _Impostazioni aggiuntive_.
+Il nome di può personalizzare aggiungendo una configurazione addizionale nella sezione _Impostazioni aggiuntive_ del form di CF7 .
 
-Es: `wt_filename: [your-subject]-{datetime}`
+_Esempio_
+```
+wt_filename: [your-subject]-{datetime}
+```
 
-La stringa può essere personalizzata usando qualunque tag del form CF7 oltre ai tag "special" già disponibili in CF7 quali _data di invio_ _ora di invio_ _titolo pagina_ ecc... [Vedi tutti i _tag speciali_ qui](https://contactform7.com/special-mail-tags/)
+La stringa può essere personalizzata usando qualunque tag del form CF7 oltre ai tag "special" già disponibili in CF7 quali _data di invio_, _ora di invio_, _titolo pagina_ ecc... [Vedi tutti i _tag speciali_ qui](https://contactform7.com/special-mail-tags/)
 
 Tutto il contenuto di `wt_filename` viene filtrato per renderlo un nome di file valido (tolti gli spazi, i caratteri non validi ecc...)
 
 ## Convertire in maiuscolo e minuscolo un campo ##
-In _Impostazioni aggiuntive_ puoi indicare i campi di cui vuoi cambiare la capitalizzazione prima di inserirli nel template. Per esempio puoi scrivere `wt_uppercase: [codice_fiscale]` per avere tutto il codice fiscale maiuscolo, indipendentemente da come l'ha inserito l'utente.
+Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi di cui vuoi cambiare la capitalizzazione prima di inserirli nel template. Per esempio puoi scrivere `wt_uppercase: [codice_fiscale]` per avere tutto il codice fiscale maiuscolo, indipendentemente da come l'ha inserito l'utente.
 
 I campi disponibili sono:
 - `wt_uppercase:` _tutto maiuscolo_
@@ -34,13 +50,25 @@ I campi disponibili sono:
 - `wt_ucwords:` _maiuscole le iniziali di ogni parola_
 - `wt_ucfirst:` _maiuscola la prima lettera della sringa_
 
+_Esempio_
+```
+wt_uppercase: [your-name]
+wt_uppercase: [your-subject]
+```
+
 ## Formattare un campo data ##
-In _Impostazioni aggiuntive_ puoi indicare i campi data di cui vuoi cambiare il formato. Per esempio puoi scrivere `wt_format_date: [date-402]|"d/m/Y"` per avere quel campo data con un formato adatto all'Italia.
+Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi data di cui vuoi cambiare il formato. Per esempio puoi scrivere `wt_format_date: [date-402]|"d/m/Y"` per avere quel campo data con un formato adatto all'Italia.
 
 Il campo va scritto nel seguente modo:
 - `wt_format_date: [nome del tag data da formattare] | formato data secondo PHP date()`
 
 Il nome del tag data e il formato data sono separati dal simbolo `|` (pipe) e il formato della data è specificato usando i codici tipici della funzione [PHP date()](https://www.php.net/manual/en/datetime.format.php)
+
+_Esempio_
+```
+wt_format_date: [date-402]|d/m/Y
+```
+
 
 ## Allegare altri file "statici" ##
 E' possibile allegare file che vengono inviati via email così come sono, senza essere processati come templates.
@@ -53,12 +81,12 @@ Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file 
 
 
 ## todo ##
-1. cartella arbitraria per caricare i template
+1. più direttive separate da una virgola
 1. multi template: ogni form può compilare più templates
 2. creare le cartelle con il file .htaccess all'attivazione del plugin
 1. carta intestata centro / template personalizzato del centro
 1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
-1. cambiare i tag nei template da ${...} a [...] [Per un bug in PhpWord non si può fare]
+1. _cambiare i tag nei template da ${...} a [...]_ **[Per un bug in PhpWord non si può fare]**
 
 ## references ##
 [PHPWord](https://phpoffice.github.io/PHPWord/index.html)

@@ -30,118 +30,125 @@ function wacf7_template_parse_attach($WPCF7_ContactForm) {
 
 	// error_log( 'Istanza ' . var_export( $WPCF7_ContactForm, true ) );
 
-	// $template_dir = wp_upload_dir();
-	// $template_dir = $template_dir['basedir'] . '/wpcf7-templates/';
-	$template_dir = wacf7_get_template_dir();
+	//Get current form
+	$wpcf7 = WPCF7_ContactForm::get_current();
 
-	$template_name = 'template-form-' . $WPCF7_ContactForm->id() . '.docx';
+	//GET TEMPLATE FILENAME
+	$template_paths = $wpcf7->additional_setting('wt_template', 100);
 
-	if( file_exists( $template_dir . $template_name ) ) {
+	if( !$template_paths ){
+		$template_dir = wacf7_get_template_dir();
+		$template_name = 'template-form-' . $WPCF7_ContactForm->id() . '.docx';
+		$template_paths[] = $template_dir . $template_name;
+	}
 
-	// error_log( 'form id' . var_export( $WPCF7_ContactForm->id(), true ) );
+	foreach( $template_paths as $template_path ){
+		if( file_exists( $template_path ) ) {
 
-		//Get current form
-		$wpcf7 = WPCF7_ContactForm::get_current();
+			// error_log( 'form id' . var_export( $WPCF7_ContactForm->id(), true ) );
 
-		// get current SUBMISSION instance
-		$submission = WPCF7_Submission::get_instance();
+				// get current SUBMISSION instance
+				$submission = WPCF7_Submission::get_instance();
 
-		if ($submission) {
+				if ($submission) {
 
-			// get submission data
-			$data = $submission->get_posted_data();
+					// get submission data
+					$data = $submission->get_posted_data();
 
-			// nothing's here... do nothing...
-			if (empty($data))
-				return;
+					// nothing's here... do nothing...
+					if (empty($data))
+						return;
 
-			// error_log( 'DATA: ' . var_export( $data, true ) );
+					// error_log( 'DATA: ' . var_export( $data, true ) );
 
-			// TemplateProcessor can only substitute strings. But CF7's dropdowns, checkboxes, etc sends arrays
-			// here we implode them.
-			foreach($data as $key=>$item){
-				if( is_array( $item ) ){
-					if( count( $item ) == 1 ){
-						$data[$key] = $item[0];
+					// TemplateProcessor can only substitute strings. But CF7's dropdowns, checkboxes, etc sends arrays
+					// here we implode them.
+					foreach($data as $key=>$item){
+						if( is_array( $item ) ){
+							if( count( $item ) == 1 ){
+								$data[$key] = $item[0];
+							}
+							else{
+								$data[$key] = implode( ', ', $item );
+							}
+						}
 					}
-					else{
-						$data[$key] = implode( ', ', $item );
+
+					// Transform uppercase fields according to directives
+					$uppercase_directives = $wpcf7->additional_setting('wt_uppercase', 100);
+					foreach( $uppercase_directives as $key){
+						$key = str_replace( '[', '', $key );
+						$key = str_replace( ']', '', $key );
+						$data[$key] = strtoupper($data[$key]);
 					}
+					// Transform lowercase fields according to directives
+					$lowercase_directives = $wpcf7->additional_setting('wt_lowercase', 100);
+					foreach( $lowercase_directives as $key){
+						$key = str_replace( '[', '', $key );
+						$key = str_replace( ']', '', $key );
+						$data[$key] = strtolower($data[$key]);
+					}
+					$ucfirst_directives = $wpcf7->additional_setting('wt_ucfirst', 100);
+					foreach( $ucfirst_directives as $key){
+						$key = str_replace( '[', '', $key );
+						$key = str_replace( ']', '', $key );
+						$data[$key] = ucfirst($data[$key]);
+					}
+					$ucwords_directives = $wpcf7->additional_setting('wt_ucwords', 100);
+					foreach( $ucwords_directives as $key){
+						$key = str_replace( '[', '', $key );
+						$key = str_replace( ']', '', $key );
+						$data[$key] = ucwords($data[$key]);
+					}
+
+					// Format date
+					$format_date_directives = $wpcf7->additional_setting('wt_format_date', 100);
+					foreach( $format_date_directives as $key){
+						$key = str_replace( '[', '', $key );
+						$key = str_replace( ']', '', $key );
+						$info = explode( "|", $key );
+						$key = $info[0];
+						$format = $info[1];
+						$data[$key] = date( $format, strtotime($data[$key]));
+					}
+
+					// PHPWord stuff...
+					$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_path );
+
+					// In the templates let's search for tags delimited by [...]
+					// $templateProcessor->setMacroChars('[', ']'); /** BUG in phpWord waiting to be fixed */
+
+					$templateProcessor->setValues($data);
+
+					// Setup the filename
+					$default_filename = 'document-' . time() . '-' . wp_date( get_option( 'date_format' ), time() );
+					$default_filename = sanitize_file_name( $default_filename );
+
+					$fileName = $default_filename;
+
+					if(!empty($wpcf7->pref('wt_filename'))){
+						$file = sanitize_file_name( wpcf7_mail_replace_tags( $wpcf7->pref('wt_filename') ) );
+						if( !empty( $file ) ) $fileName = $file;
+					}
+					$fileName .= '.docx';
+
+					// setup upload directory
+					$upload_dir = wacf7_get_merged_upload_dir();
+
+					$templateProcessor->saveAs( path_join( $upload_dir, $fileName ) );
+
+					// add upload to e-mail
+					$submission->add_extra_attachments( path_join( $upload_dir, $fileName ) );
+					// $submission->add_extra_attachments( $upload_dir . $fileName, 'mail_2' );  //per inviare anche a email2
+
+					// carry on with cf7
+					return $wpcf7;
+
 				}
 			}
-
-			// Transform uppercase fields according to directives
-			$uppercase_directives = $wpcf7->additional_setting('wt_uppercase', 100);
-			foreach( $uppercase_directives as $key){
-				$key = str_replace( '[', '', $key );
-				$key = str_replace( ']', '', $key );
-				$data[$key] = strtoupper($data[$key]);
-			}
-			// Transform lowercase fields according to directives
-			$lowercase_directives = $wpcf7->additional_setting('wt_lowercase', 100);
-			foreach( $lowercase_directives as $key){
-				$key = str_replace( '[', '', $key );
-				$key = str_replace( ']', '', $key );
-				$data[$key] = strtolower($data[$key]);
-			}
-			$ucfirst_directives = $wpcf7->additional_setting('wt_ucfirst', 100);
-			foreach( $ucfirst_directives as $key){
-				$key = str_replace( '[', '', $key );
-				$key = str_replace( ']', '', $key );
-				$data[$key] = ucfirst($data[$key]);
-			}
-			$ucwords_directives = $wpcf7->additional_setting('wt_ucwords', 100);
-			foreach( $ucwords_directives as $key){
-				$key = str_replace( '[', '', $key );
-				$key = str_replace( ']', '', $key );
-				$data[$key] = ucwords($data[$key]);
-			}
-
-			// Format date
-			$format_date_directives = $wpcf7->additional_setting('wt_format_date', 100);
-			foreach( $format_date_directives as $key){
-				$key = str_replace( '[', '', $key );
-				$key = str_replace( ']', '', $key );
-				$info = explode( "|", $key );
-				$key = $info[0];
-				$format = $info[1];
-				$data[$key] = date( $format, strtotime($data[$key]));
-			}
-
-			// PHPWord stuff...
-			$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_dir . $template_name );
-
-			// In the templates let's search for tags delimited by [...]
-			// $templateProcessor->setMacroChars('[', ']'); /** BUG in phpWord waiting to be fixed */
-
-			$templateProcessor->setValues($data);
-
-			// Setup the filename
-			$default_filename = 'document-' . time() . '-' . wp_date( get_option( 'date_format' ), time() );
-			$default_filename = sanitize_file_name( $default_filename );
-
-			$fileName = $default_filename;
-
-			if(!empty($wpcf7->pref('wt_filename'))){
-				$file = sanitize_file_name( wpcf7_mail_replace_tags( $wpcf7->pref('wt_filename') ) );
-				if( !empty( $file ) ) $fileName = $file;
-			}
-			$fileName .= '.docx';
-
-			// setup upload directory
-			$upload_dir = wacf7_get_merged_upload_dir();
-
-			$templateProcessor->saveAs( path_join( $upload_dir, $fileName ) );
-
-			// add upload to e-mail
-			$submission->add_extra_attachments( path_join( $upload_dir, $fileName ) );
-			// $submission->add_extra_attachments( $upload_dir . $fileName, 'mail_2' );  //per inviare anche a email2
-
-			// carry on with cf7
-			return $wpcf7;
-
-		}
 	}
+
+
 }
 
 
