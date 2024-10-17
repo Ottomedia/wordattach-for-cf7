@@ -1,9 +1,9 @@
-# Cosa fa questo plugin #
+# Cosa fa questo plugin
 Il plugin permette di fare un "mail merge" dei dati di qualunque form di Contact Form 7 in un file di Word (che chiamiamo template) che viene poi inviato in allegato alla mail che CF7 invia.
 
 Può essere utile per utilizzare i dati del form per compilare un modulo d'ordine, un formulario, un attesto ecc ecc.
 
-## Preparare il template ##
+## Preparare il template
 
 1. Scrivi il file "modello" in Word. In ogni punto in cui voui che venga inserito un campo di CF7 inserisci il segnaposto `${_nome_del_campo_CF7_}` (per esempio, per inserire il campo `[your-subject]` dovrai scrivere in Word `${your-subject})` 
 1. Salva il file col nome `template-form-_N_.docx` dove _N_ è l'ID del form CF7 che raccoglie i dati per compilarlo
@@ -13,7 +13,7 @@ Attenzione: i file generati vengono spediti per email e non vengono mantenuti su
 
 Al momento vengono allegati solo alla _Mail 1_ ... vediamo se abilitare l'invio ad entrambe con uno switch
 
-## Utilizzare un template con nome e percorso a piacere ##
+## Utilizzare un template con nome e percorso a piacere
 
 E' possibile salvare il template anche in altre locazioni del server e dargli un nome personalizzato.
 
@@ -26,7 +26,7 @@ _Esempio_
 wt_template: C:\Users\Mario\app\public\wp-content\uploads\2024\10\test-form.docx
 ```
 
-## Personalizzare il nome del file generato ##
+## Personalizzare il nome del file generato
 
 Di default il nome del file generato è `document-XXXX-XX-XX-HH-MM-SS` dove `XXXX-XX-XX-HH-MM-SS` + la data e l'ora della creazione del file.
 
@@ -41,7 +41,7 @@ La stringa può essere personalizzata usando qualunque tag del form CF7 oltre ai
 
 Tutto il contenuto di `wt_filename` viene filtrato per renderlo un nome di file valido (tolti gli spazi, i caratteri non validi ecc...)
 
-## Convertire in maiuscolo e minuscolo un campo ##
+## Convertire in maiuscolo e minuscolo un campo
 Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi di cui vuoi cambiare la capitalizzazione prima di inserirli nel template. Per esempio puoi scrivere `wt_uppercase: [codice_fiscale]` per avere tutto il codice fiscale maiuscolo, indipendentemente da come l'ha inserito l'utente.
 
 I campi disponibili sono:
@@ -56,7 +56,7 @@ wt_uppercase: [your-name]
 wt_uppercase: [your-subject]
 ```
 
-## Formattare un campo data ##
+## Formattare un campo data
 Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi data di cui vuoi cambiare il formato. Per esempio puoi scrivere `wt_format_date: [date-402]|"d/m/Y"` per avere quel campo data con un formato adatto all'Italia.
 
 Il campo va scritto nel seguente modo:
@@ -68,19 +68,22 @@ _Esempio_
 ```
 wt_format_date: [date-402]|d/m/Y
 ```
+## Inserire la data di compilazione nel documento generato
+La data di invio del modulo si può ottenere con il tag `[_date]`
 
+Di conseguenza, nel template Word dove si vuole ottenere la data di invio, bisogna inserire il segnaposto `${_date}`
 
-## Allegare altri file "statici" ##
+## Allegare altri file "statici" 
 E' possibile allegare file che vengono inviati via email così come sono, senza essere processati come templates.
 
 Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
 
-## Privacy ##
+## Privacy 
 I file "compilati" vengono salvati nella cartella di uploads temporanei di CF7 (di soli `wp-content/uploads/wpcf7_uploads`) in una sottocartella temporanea chiamata `wacf7_merged` e inviati via email. 
 Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file viene mantenuto sul server**
 
 
-## todo ##
+## todo 
 1. più direttive separate da una virgola
 1. multi template: ogni form può compilare più templates
 2. creare le cartelle con il file .htaccess all'attivazione del plugin
@@ -88,12 +91,12 @@ Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file 
 1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
 1. _cambiare i tag nei template da ${...} a [...]_ **[Per un bug in PhpWord non si può fare]**
 
-## references ##
+## references 
 [PHPWord](https://phpoffice.github.io/PHPWord/index.html)
 
 [Stack Excange reference](https://stackoverflow.com/questions/48189010/dynamically-attaching-file-to-contact-form-7-e-mail)
 
-### form object ###
+### form object
 ```php
 WPCF7_ContactForm::__set_state(array(
    'id' => 5,

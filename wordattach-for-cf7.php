@@ -49,7 +49,7 @@ function wacf7_template_parse_attach($WPCF7_ContactForm) {
 
 				// get current SUBMISSION instance
 				$submission = WPCF7_Submission::get_instance();
-
+				// error_log( 'SUBMISSION ' . var_export( $submission, true ) );
 				if ($submission) {
 
 					// get submission data
@@ -59,7 +59,12 @@ function wacf7_template_parse_attach($WPCF7_ContactForm) {
 					if (empty($data))
 						return;
 
-					// error_log( 'DATA: ' . var_export( $data, true ) );
+					error_log( 'DATA: ' . var_export( $data, true ) );
+
+					// Add context information not passed from Cf7
+					// Add submission date
+					$data['_date'] = wp_date(get_option( 'date_format' ));
+
 
 					// TemplateProcessor can only substitute strings. But CF7's dropdowns, checkboxes, etc sends arrays
 					// here we implode them.
