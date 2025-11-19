@@ -74,9 +74,65 @@ foreach ($trim_directives as $key) {
 - Do not modify vendor/ or plugin-update-checker/ directly for feature work.
 - No persistent storage / DB inserts unless explicitly requested.
 
-## Quick Reference
-- Hook to extend: `wpcf7_before_send_mail`.
-- Get submission: `WPCF7_Submission::get_instance()`.
-- Attach file: `$submission->add_extra_attachments($absolutePath)`.
+## Recent Changes (v1.5.0)
+- Added optional debug system: directives wt_debug (true/false), wt_debug_to (log | mail | both), wt_debug_level (currently basic; future levels may expand).
+- Debug output can be appended to outgoing mail (HTML or plain) or sent to error_log; includes environment snapshot + step trace.
+- Enhanced template-missing diagnostics: suggested path, permission hints, realpath status, uploads containment check.
+- New automatic special tag [_date] (localized current date).
+- Custom output filename via wt_filename (supports mail tags) and sanitized before saving.
+- Improved filename default pattern when wt_filename absent.
+- Arrays in posted data are coerced (single element -> scalar, multi -> comma-separated string).
+
+## Template Processing Behavior
+- Multiple wt_template: lines are accepted; the code stops after the FIRST existing template is merged (early return inside the loop). To truly support multiple attachments, remove the return and allow loop continuation.
+- Comma-separated paths are not yet auto-split; to extend, explode by comma, trim, and merge into $template_paths before loop.
+
+## Directives Summary (current)
+- wt_template: Absolute .docx path(s); fallback auto-name template-form-{formId}.docx under uploads/wpcf7-templates/.
+- wt_filename: Pattern for output file (without extension); .docx added automatically.
+- wt_uppercase / wt_lowercase / wt_ucfirst / wt_ucwords: Transform listed field values; tags may be provided in [tag] form; brackets stripped.
+- wt_format_date: [field]|PHP-date-format (e.g. wt_format_date: [birthdate]|d/m/Y).
+- wt_debug: true/false enabling debug.
+- wt_debug_to: log | mail | both.
+- wt_debug_level: basic (placeholder for future granularity).
+- Special injected tag: [_date].
+
+## Implementation Notes
+- Placeholders in Word remain ${field-name}.
+- Only strings are set in TemplateProcessor; coercion step runs before transformations.
+- Sanitization: sanitize_file_name() applied to final filename.
+- Writes merged file to CF7 temp subdir: uploads/wpcf7_uploads/wacf7_merged/ (created on demand).
+- Early return after first successful merge: adjust if adding multi-template output.
+
+## Extending (Examples)
+- Trim directive pattern (not yet in code):
+```php
+$trim_directives = $wpcf7->additional_setting('wt_trim', 100);
+foreach ($trim_directives as $key) {
+  $key = trim(str_replace(['[',']'], '', $key));
+  if (isset($data[$key])) $data[$key] = trim($data[$key]);
+}
+```
+- Multi-template full support: remove the return $wpcf7; at end of successful merge block and let loop continue; collect all attachments.
+
+## Debug Integration
+- Bootstrap once per request (wacf7_debug_bootstrap), accumulating messages in buffer.
+- Flush to mail body only if wt_debug_to = mail or both.
+- Environment snapshot includes PHP, WP, CF7, uploads paths, plugin directories.
+
+## Safety
+- Do not write outside uploads/ temp area.
+- Treat paths as trusted if under uploads; otherwise only log hints—no blocking.
+- Avoid modifying vendor/ or plugin-update-checker/ unless upgrading intentionally.
+
+## Performance
+- O(n) over fields for transformations.
+- Single TemplateProcessor instantiation per processed template.
+
+## Future Improvement Ideas
+- True multi-template processing (remove early return).
+- Add wt_trim officially.
+- Add richer debug_level filtering.
+- Optional path normalization + relative path support under uploads base.
 
 Provide feedback if any section needs elaboration or if new directives should be documented.

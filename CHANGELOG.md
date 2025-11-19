@@ -1,5 +1,6 @@
 # Changelog #
 
+- 1.5.0 - - Aggiunto un report di debug opzionale (via email o log) per semplificare l’individuazione dei problemi.
 - 1.4.0 - Support [_date]_] tag for submission date
 - 1.3.0 - Support custom template path and filename
 - 1.2.0 - Automatically delete generated files when sent

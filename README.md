@@ -1,4 +1,6 @@
-# Cosa fa questo plugin
+# Word Template Attachments for CF7
+
+## Cosa fa questo plugin
 Il plugin permette di fare un "mail merge" dei dati di qualunque form di Contact Form 7 in un file di Word (che chiamiamo template) che viene poi inviato in allegato alla mail che CF7 invia.
 
 Può essere utile per utilizzare i dati del form per compilare un modulo d'ordine, un formulario, un attesto ecc ecc.
@@ -13,7 +15,32 @@ Attenzione: i file generati vengono spediti per email e non vengono mantenuti su
 
 Al momento vengono allegati solo alla _Mail 1_ ... vediamo se abilitare l'invio ad entrambe con uno switch
 
-## Utilizzare un template con nome e percorso a piacere
+## Configurazioni
+
+## Riepilogo delle direttive disponibili 
+
+Le direttive si inseriscono nel form di Contact Form 7 alla voce "Impostazioni aggiuntive" (Additional Settings), una per riga. Vengono lette al momento dell'invio del modulo e non richiedono altro codice o modifiche al template (salvo dove specificato).
+
+| Direttiva | Forma | Scopo |
+|-----------|-------|-------|
+| `wt_template:` | `wt_template: /percorso/assoluto/al/file.docx` (ripetibile) | Specifica uno o più template `.docx`. Se assente usa `wp-content/uploads/wpcf7-templates/template-form-{ID}.docx`. |
+| `wt_filename:` | `wt_filename: [your-subject]-{datetime}` | Pattern nome file generato (senza estensione). Mail tags e special tags CF7 supportati. |
+| `wt_uppercase:` | `wt_uppercase: [campo]` | Converte il campo in maiuscolo. |
+| `wt_lowercase:` | `wt_lowercase: [campo]` | Converte il campo in minuscolo. |
+| `wt_ucwords:` | `wt_ucwords: [campo]` | Capitalizza l'iniziale di ogni parola. |
+| `wt_ucfirst:` | `wt_ucfirst: [campo]` | Capitalizza la prima lettera della stringa. |
+| `wt_format_date:` | `wt_format_date: [campo-data]|d/m/Y` | Riformatta una data con specifica di `date()`. |
+| `wt_debug:` | `wt_debug: on|off` | Abilita il sistema di debug. |
+| `wt_debug_to:` | `wt_debug_to: log|mail|both` | Destinazione del report: log file, email admin, oppure entrambi. |
+| `wt_debug_level:` | `wt_debug_level: basic|verbose` | Livello di dettaglio (estensioni future). |
+
+Note:
+- Ogni direttiva va su una riga distinta nelle "Impostazioni aggiuntive" del form CF7.
+- Direttive ripetibili (es. `wt_template`, trasformazioni) vengono iterate in ordine.
+- Campi array (checkbox multipli) vengono normalizzati prima delle trasformazioni.
+
+
+### Utilizzare un template con nome e percorso a piacere
 
 E' possibile salvare il template anche in altre locazioni del server e dargli un nome personalizzato.
 
@@ -26,7 +53,7 @@ _Esempio_
 wt_template: C:\Users\Mario\app\public\wp-content\uploads\2024\10\test-form.docx
 ```
 
-## Personalizzare il nome del file generato
+### Personalizzare il nome del file generato
 
 Di default il nome del file generato è `document-XXXX-XX-XX-HH-MM-SS` dove `XXXX-XX-XX-HH-MM-SS` + la data e l'ora della creazione del file.
 
@@ -41,7 +68,7 @@ La stringa può essere personalizzata usando qualunque tag del form CF7 oltre ai
 
 Tutto il contenuto di `wt_filename` viene filtrato per renderlo un nome di file valido (tolti gli spazi, i caratteri non validi ecc...)
 
-## Convertire in maiuscolo e minuscolo un campo
+### Convertire in maiuscolo e minuscolo un campo
 Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi di cui vuoi cambiare la capitalizzazione prima di inserirli nel template. Per esempio puoi scrivere `wt_uppercase: [codice_fiscale]` per avere tutto il codice fiscale maiuscolo, indipendentemente da come l'ha inserito l'utente.
 
 I campi disponibili sono:
@@ -56,7 +83,7 @@ wt_uppercase: [your-name]
 wt_uppercase: [your-subject]
 ```
 
-## Formattare un campo data
+### Formattare un campo data
 Nella sezione _Impostazioni aggiuntive_ del form di CF7  puoi indicare i campi data di cui vuoi cambiare il formato. Per esempio puoi scrivere `wt_format_date: [date-402]|"d/m/Y"` per avere quel campo data con un formato adatto all'Italia.
 
 Il campo va scritto nel seguente modo:
@@ -68,12 +95,12 @@ _Esempio_
 ```
 wt_format_date: [date-402]|d/m/Y
 ```
-## Inserire la data di compilazione nel documento generato
+### Inserire la data di compilazione nel documento generato
 La data di invio del modulo si può ottenere con il tag `[_date]`
 
 Di conseguenza, nel template Word dove si vuole ottenere la data di invio, bisogna inserire il segnaposto `${_date}`
 
-## Allegare altri file "statici" 
+### Allegare altri file "statici" 
 E' possibile allegare file che vengono inviati via email così come sono, senza essere processati come templates.
 
 Si tratta di una funzione nativa di CF7. [Consultare la documentzione qui](https://contactform7.com/file-uploading-and-attachment/#local-file-attachment)
@@ -83,7 +110,7 @@ I file "compilati" vengono salvati nella cartella di uploads temporanei di CF7 (
 Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file viene mantenuto sul server**
 
 
-## todo 
+## da fare / roadmap 
 1. più direttive separate da una virgola
 1. multi template: ogni form può compilare più templates
 2. creare le cartelle con il file .htaccess all'attivazione del plugin
@@ -91,380 +118,36 @@ Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file 
 1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
 1. _cambiare i tag nei template da ${...} a [...]_ **[Per un bug in PhpWord non si può fare]**
 
-## references 
-[PHPWord](https://phpoffice.github.io/PHPWord/index.html)
+## Debug e Troubleshooting
 
-[Stack Excange reference](https://stackoverflow.com/questions/48189010/dynamically-attaching-file-to-contact-form-7-e-mail)
+Puoi attivare un sistema di debug che scrive su `error_log` oppure accoda un report alla mail admin (Mail 1) inviata da CF7.
 
-### form object
-```php
-WPCF7_ContactForm::__set_state(array(
-   'id' => 5,
-   'name' => 'contact-form-1',
-   'title' => 'Contact form 1',
-   'locale' => 'it_IT',
-   'properties' => 
-  array (
-    'form' => '<label> Your name
-    [text* your-name autocomplete:name] </label>
+- `wt_debug: on|off` abilita o disabilita il debug (default: off)
+- `wt_debug_to: log|mail|both` seleziona dove inviare il report (log, email admin, o entrambi)
+- `wt_debug_level: basic|verbose` controlla il livello di dettaglio (attualmente usato per futuri approfondimenti)
 
-<label> Your email
-    [email* your-email autocomplete:email] </label>
-
-<label> Subject
-    [text* your-subject] </label>
-
-<label> Your message (optional)
-    [textarea your-message] </label>
-[file allegato1 filetypes:txt|pdf|doc|docx|xls|xlsx]
-[submit "Submit"]',
-    'mail' => 
-    array (
-      'active' => true,
-      'subject' => '[your-subject]',
-      'sender' => '[_site_title] <wordpress@contratti.local>',
-      'recipient' => 'stefano@garuti.it',
-      'body' => '[your-name]
-[your-email]
-[your-subject]
-[your-message]
-[allegato1]',
-      'additional_headers' => 'Reply-To: [your-email]',
-      'attachments' => '[allegato1]',
-      'use_html' => true,
-      'exclude_blank' => false,
-    ),
-    'mail_2' => 
-    array (
-      'active' => true,
-      'subject' => '[_site_title] "[your-subject]"',
-      'sender' => '[_site_title] <wordpress@contratti.local>',
-      'recipient' => '[your-email]',
-      'body' => 'Message Body:
-[your-message]
-
--- 
-This email is a receipt for your contact form submission on our website ([_site_title] [_site_url]) in which your email address was used. If that was not you, please ignore this message.',
-      'additional_headers' => 'Reply-To: [_site_admin_email]',
-      'attachments' => '[allegato1]',
-      'use_html' => false,
-      'exclude_blank' => false,
-    ),
-    'messages' => 
-    array (
-      'mail_sent_ok' => 'Thank you for your message. It has been sent.',
-      'mail_sent_ng' => 'There was an error trying to send your message. Please try again later.',
-      'validation_error' => 'One or more fields have an error. Please check and try again.',
-      'spam' => 'There was an error trying to send your message. Please try again later.',
-      'accept_terms' => 'You must accept the terms and conditions before sending your message.',
-      'invalid_required' => 'Please fill out this field.',
-      'invalid_too_long' => 'This field has a too long input.',
-      'invalid_too_short' => 'This field has a too short input.',
-      'upload_failed' => 'There was an unknown error uploading the file.',
-      'upload_file_type_invalid' => 'You are not allowed to upload files of this type.',
-      'upload_file_too_large' => 'The uploaded file is too large.',
-      'upload_failed_php_error' => 'There was an error uploading the file.',
-      'invalid_date' => 'Inserisci la data nel formato YYYY-MM-DD.',
-      'date_too_early' => 'Data troppo antecedente per questo campo.',
-      'date_too_late' => 'Data troppo posticipata per questo campo.',
-      'invalid_number' => 'Inserisci un numero.',
-      'number_too_small' => 'Numero troppo corto per questo campo.',
-      'number_too_large' => 'Numero troppo lungo per questo campo.',
-      'quiz_answer_not_correct' => 'La risposta al quiz non è corretta.',
-      'invalid_email' => 'Inserisci un indirizzo email.',
-      'invalid_url' => 'Inserisci un URL.',
-      'invalid_tel' => 'Inserisci numero di telefono.',
-      'captcha_not_match' => 'Il codice che hai inserito non è valido.',
-    ),
-    'additional_settings' => '',
-  ),
-   'unit_tag' => NULL,
-   'responses_count' => 0,
-   'scanned_form_tags' => 
-  array (
-    0 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'text*',
-       'basetype' => 'text',
-       'raw_name' => 'your-name',
-       'name' => 'your-name',
-       'options' => 
-      array (
-        0 => 'autocomplete:name',
-      ),
-       'raw_values' => 
-      array (
-      ),
-       'values' => 
-      array (
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-        ),
-      )),
-       'labels' => 
-      array (
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-    1 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'email*',
-       'basetype' => 'email',
-       'raw_name' => 'your-email',
-       'name' => 'your-email',
-       'options' => 
-      array (
-        0 => 'autocomplete:email',
-      ),
-       'raw_values' => 
-      array (
-      ),
-       'values' => 
-      array (
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-        ),
-      )),
-       'labels' => 
-      array (
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-    2 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'text*',
-       'basetype' => 'text',
-       'raw_name' => 'your-subject',
-       'name' => 'your-subject',
-       'options' => 
-      array (
-      ),
-       'raw_values' => 
-      array (
-      ),
-       'values' => 
-      array (
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-        ),
-      )),
-       'labels' => 
-      array (
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-    3 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'textarea',
-       'basetype' => 'textarea',
-       'raw_name' => 'your-message',
-       'name' => 'your-message',
-       'options' => 
-      array (
-      ),
-       'raw_values' => 
-      array (
-      ),
-       'values' => 
-      array (
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-        ),
-      )),
-       'labels' => 
-      array (
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-    4 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'file',
-       'basetype' => 'file',
-       'raw_name' => 'allegato1',
-       'name' => 'allegato1',
-       'options' => 
-      array (
-        0 => 'filetypes:txt|pdf|doc|docx|xls|xlsx',
-      ),
-       'raw_values' => 
-      array (
-      ),
-       'values' => 
-      array (
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-        ),
-      )),
-       'labels' => 
-      array (
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-    5 => 
-    WPCF7_FormTag::__set_state(array(
-       'type' => 'submit',
-       'basetype' => 'submit',
-       'raw_name' => '',
-       'name' => '',
-       'options' => 
-      array (
-      ),
-       'raw_values' => 
-      array (
-        0 => 'Submit',
-      ),
-       'values' => 
-      array (
-        0 => 'Submit',
-      ),
-       'pipes' => 
-      WPCF7_Pipes::__set_state(array(
-         'pipes' => 
-        array (
-          0 => 
-          WPCF7_Pipe::__set_state(array(
-             'before' => 'Submit',
-             'after' => 'Submit',
-          )),
-        ),
-      )),
-       'labels' => 
-      array (
-        0 => 'Submit',
-      ),
-       'attr' => '',
-       'content' => '',
-    )),
-  ),
-   'shortcode_atts' => 
-  array (
-  ),
-   'hash' => '22a995c261ea088a9c585024378e17dd068544b8',
-   'schema' => 
-  WPCF7_SWV_Schema::__set_state(array(
-     'properties' => 
-    array (
-      'version' => 'Contact Form 7 SWV Schema 2024-02',
-      'locale' => 'it_IT',
-    ),
-     'rules' => 
-    array (
-      0 => 
-      Contactable\SWV\FileRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'allegato1',
-          'accept' => 
-          array (
-            0 => '.txt',
-            1 => '.pdf',
-            2 => '.doc',
-            3 => '.docx',
-            4 => '.xls',
-            5 => '.xlsx',
-          ),
-          'error' => 'You are not allowed to upload files of this type.',
-        ),
-      )),
-      1 => 
-      Contactable\SWV\MaxFileSizeRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'allegato1',
-          'threshold' => 1048576,
-          'error' => 'The uploaded file is too large.',
-        ),
-      )),
-      2 => 
-      Contactable\SWV\RequiredRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-name',
-          'error' => 'Please fill out this field.',
-        ),
-      )),
-      3 => 
-      Contactable\SWV\MaxLengthRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-name',
-          'threshold' => 400,
-          'error' => 'This field has a too long input.',
-        ),
-      )),
-      4 => 
-      Contactable\SWV\RequiredRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-email',
-          'error' => 'Please fill out this field.',
-        ),
-      )),
-      5 => 
-      Contactable\SWV\EmailRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-email',
-          'error' => 'Inserisci un indirizzo email.',
-        ),
-      )),
-      6 => 
-      Contactable\SWV\MaxLengthRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-email',
-          'threshold' => 400,
-          'error' => 'This field has a too long input.',
-        ),
-      )),
-      7 => 
-      Contactable\SWV\RequiredRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-subject',
-          'error' => 'Please fill out this field.',
-        ),
-      )),
-      8 => 
-      Contactable\SWV\MaxLengthRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-subject',
-          'threshold' => 400,
-          'error' => 'This field has a too long input.',
-        ),
-      )),
-      9 => 
-      Contactable\SWV\MaxLengthRule::__set_state(array(
-         'properties' => 
-        array (
-          'field' => 'your-message',
-          'threshold' => 2000,
-          'error' => 'This field has a too long input.',
-        ),
-      )),
-    ),
-  )),
-   'pipes' => NULL,
-))
+Esempi (Impostazioni aggiuntive CF7):
 ```
+wt_debug: on
+wt_debug_to: both
+wt_debug_level: basic
+```
+
+Il report nell'email è formattato in modo leggibile (HTML o testo) e include:
+- Environment: versioni PHP/WP/CF7, `uploads.basedir`, dir temporanea CF7, dir template
+- Steps: percorso template scelti, esito controlli, salvataggio file, allegati
+- Errori/exception di PhpWord quando presenti
+
+Quando un template non viene trovato:
+- Viene mostrato `template_missing` con: path normalizzato, esistenza/scrivibilità della cartella, `realpath`, se è sotto `uploads`.
+- Se il path arriva da direttiva (`wt_template:`) include suggerimenti:
+  - `hint_suggested_path`: propone un percorso valido sotto `wp-content/uploads/wpcf7-templates/` usando il nome file fornito (se termina in `.docx`) oppure `template-form-{ID}.docx`.
+  - `hint_spaces_in_path`: se il path contiene spazi consiglia di racchiuderlo tra virgolette per evitare parsing errato.
+  - `hint_dir_permissions`: la directory esiste ma non è scrivibile; verifica permessi / owner / ACL.
+
+Suggerimento percorso di default:
+```
+wp-content/uploads/wpcf7-templates/template-form-{ID_FORM}.docx
+```
+o, se fornisci un nome file valido `.docx`, usa quello nella stessa cartella.
+
