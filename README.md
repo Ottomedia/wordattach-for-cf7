@@ -52,6 +52,15 @@ _Esempio_
 ```
 wt_template: C:\Users\Mario\app\public\wp-content\uploads\2024\10\test-form.docx
 ```
+#### Utilizzare un template caricato nella libreria media di WordPress
+
+Se hai caricato il template nella libreria media di WordPress puoi ottenere il path assoluto del file seguendo questi passi:
+1. Vai nel pannello di amministrazione di WordPress -> Strumenti -> Salute del sito -> Informazioni -> Directory e dimensioni
+1. Copia il valore di 'Posizione della directory degli upload' (es: `C:\Users\Mario\app\public\wp-content\uploads\`)
+1. Vai nella libreria media di WordPress e seleziona il file caricato
+1. Copia l'URL del file (es. `http://tuosito.it/wp-content/uploads/2024/10/mio-template.docx`)
+1. Converti l'URL in path assoluto: cancella la parte iniziale da `https:` a  `wp-content/uploads` e sostituiscila con il path copiato al punto 2 fino a `uploads`. Il risultato finale sarà del tipo `C:\Users\Mario\app\public\wp-content\uploads\2024\10\mio-template.docx`
+1. Usa questo path nella direttiva `wt_template:` come nell'esempio sopra
 
 ### Personalizzare il nome del file generato
 
