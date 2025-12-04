@@ -8,7 +8,7 @@
  * Requires PHP:      8.0
  * Author:            Stefano Garuti
  * Requires Plugins:  contact-form-7
- * Version:           1.5.1
+ * Version:           1.5.2
  */
 
 define( 'WACF7_ABSPATH', dirname( __FILE__ ) );
