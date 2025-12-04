@@ -125,7 +125,7 @@ Dopo che sono stati inviati la cartella temporaneo viene rimossa. **Nessun file 
 2. creare le cartelle con il file .htaccess all'attivazione del plugin
 1. carta intestata centro / template personalizzato del centro
 1. direttiva per indicare se allegare a mail 1, mail 2 o entrambi
-1. _cambiare i tag nei template da ${...} a [...]_ **[Per un bug in PhpWord non si può fare]**
+1. _cambiare i tag nei template da ${...} a [...]_ **[Per un bug in PhpWord non si può fare]** Vedi qui per possibile fix: [GitHub issue](https://github.com/PHPOffice/PHPWord/issues/2794)
 
 ## Debug e Troubleshooting
 

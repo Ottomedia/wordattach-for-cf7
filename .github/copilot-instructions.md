@@ -135,4 +135,31 @@ foreach ($trim_directives as $key) {
 - Add richer debug_level filtering.
 - Optional path normalization + relative path support under uploads base.
 
+## Coding Standards
+
+### WordPress Coding Standards
+
+All code MUST respect WordPress Coding Standards:
+- https://developer.wordpress.org/coding-standards/
+- https://developer.wordpress.org/rest-api/
+- Privilegia sempre l'uso delle funzioni e hooks native di WordPress come descritte nella più recente documentazione ufficiale: 
+- https://developer.wordpress.org/apis/
+- https://developer.wordpress.org/reference/
+- Allo stesso modo evita il più possibile l'accesso diretto con SQL: privilegia WP_QUERY, get_posts() e ale altre funzionalità WordPress
+- Check for correct use of WordPress hooks and actions.
+- Ensure all user input is properly sanitized and validated.
+- Look for potential security issues, such as SQL injection or XSS or unauthenticated REST
+
+When you are looking for WordPress, PHP and libraries documentation, functions definitions, APIs, use context7 (@context7)
+
+### Changelog Format:
+
+Il changelog è nel file CHANGELOG.md
+
+- Per il numeri di versione usiamo [Semantic Versioning 2.0.0](https://semver.org/#semantic-versioning-200)
+- Segui le best practices illustrate in [Keep a changelog](https://keepachangelog.com/en/1.1.0/)
+- Scrivi il changelog in Italiano
+- Per le nuove release suggerisci come data del changelog la data corrente
+- Come contenuto dei changelog consulta i commit di Git e le pull request chiuse a partire dalla data dell'ultima release, ma NON fare un copia-incolla dei commit: elabora un testo chiaro utile per un essere umano
+
 Provide feedback if any section needs elaboration or if new directives should be documented.
