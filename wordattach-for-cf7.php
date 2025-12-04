@@ -144,6 +144,9 @@ function wacf7_template_parse_attach($WPCF7_ContactForm) {
 					$merge_err = '';
 					try {
 						$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor( $template_path );
+						// Enable output escaping to prevent XML corruption from special characters
+						// see https://phpoffice.github.io/PHPWord/usage/introduction.html#output-escaping
+						\PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
 						$templateProcessor->setValues($data);
 
 						// Setup the filename
