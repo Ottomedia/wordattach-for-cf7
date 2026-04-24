@@ -5,17 +5,43 @@
 
 ## Release
 
-Le release vengono taggate automaticamente da GitHub Actions tramite il workflow `.github/workflows/auto-tag-version.yml`.
+Le release vengono gestite automaticamente da GitHub Actions tramite il workflow `.github/workflows/auto-tag-version.yml`.
 
 Il comportamento replica la pipeline precedente:
 - il workflow parte su `push` verso `main`
 - controlla solo il commit `HEAD` rispetto a `HEAD~1`
 - crea un tag annotato quando cambia `wordattach-for-cf7.php` e il valore di `Version:` non esiste già come tag Git
+- crea la GitHub Release usando il testo della sezione corrispondente in `CHANGELOG.md`
 
 Flusso operativo:
 1. Aggiorna `Version:` in `wordattach-for-cf7.php`
 2. Esegui il merge o push su `main`
 3. GitHub Actions crea il tag `x.y.z` sul commit corrente
+4. GitHub Actions pubblica la release `x.y.z` con note prese dal changelog
+
+Formato CHANGELOG richiesto per la release automatica:
+- La versione deve avere un header esatto nel formato `## [x.y.z]` (stessa versione presente in `wordattach-for-cf7.php`).
+- Il workflow estrae tutto il testo dopo `## [x.y.z]` fino al prossimo header `## [...]`.
+- Puoi usare sezioni come `### Added`, `### Changed`, `### Fixed`, `### Notes` e liste puntate.
+- Evita di mettere `v` dentro le parentesi della versione nel changelog (`[1.6.0]`, non `[v1.6.0]`).
+
+Esempio concreto (verrà pubblicato nella release 1.6.1):
+```md
+## [1.6.1] - 2026-04-24
+
+### Changed
+- Aggiornata la pipeline di rilascio con creazione automatica della GitHub Release.
+- Migliorati i riferimenti documentali al repository GitHub.
+
+### Fixed
+- Corretto un caso limite nella gestione del tag versione già esistente.
+
+### Notes
+- Nessun impatto sul comportamento dei template generati per gli utenti finali.
+```
+
+Nota pratica:
+- Se la sezione della versione non viene trovata o risulta vuota, la release viene creata con un messaggio di fallback.
 
 ## CF7 form object
 ```php

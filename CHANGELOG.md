@@ -5,6 +5,18 @@ Tutte le modifiche rilevanti a questo progetto sono documentate in questo file.
 Il formato è basato su [Keep a Changelog](https://keepachangelog.com/it/1.1.0/),
 e questo progetto aderisce al [Semantic Versioning](https://semver.org/lang/it/).
 
+## [1.6.1] - 2026-04-24
+
+### Changed
+- Il workflow di rilascio ora crea automaticamente anche la GitHub Release dopo il tag versione.
+- Le note della release vengono compilate prendendo in automatico il contenuto della sezione corrispondente in `CHANGELOG.md`.
+
+### Docs
+- Aggiornata la documentazione tecnica con esempio pratico sul formato da usare nel changelog per la release automatica.
+
+### Notes
+- Nessuna modifica funzionale al comportamento del plugin lato compilazione template e invio allegati.
+
 ## [1.6.0] - 2026-04-24
 
 ### Changed

@@ -1,7 +1,7 @@
 === Word Template Attachments for CF7 ===
 Requires at least: 6.5
 Requires PHP: 8.0
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 
 
 Fills Word templates with form data and send them via email
