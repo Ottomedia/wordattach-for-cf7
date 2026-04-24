@@ -3,6 +3,20 @@
 
 [Stack Excange reference](https://stackoverflow.com/questions/48189010/dynamically-attaching-file-to-contact-form-7-e-mail)
 
+## Release
+
+Le release vengono taggate automaticamente da GitHub Actions tramite il workflow `.github/workflows/auto-tag-version.yml`.
+
+Il comportamento replica la vecchia pipeline Bitbucket:
+- il workflow parte su `push` verso `main`
+- controlla solo il commit `HEAD` rispetto a `HEAD~1`
+- crea un tag annotato quando cambia `wordattach-for-cf7.php` e il valore di `Version:` non esiste gia' come tag Git
+
+Flusso operativo:
+1. Aggiorna `Version:` in `wordattach-for-cf7.php`
+2. Esegui il merge o push su `main`
+3. GitHub Actions crea il tag `x.y.z` sul commit corrente
+
 ## CF7 form object
 ```php
 WPCF7_ContactForm::__set_state(array(

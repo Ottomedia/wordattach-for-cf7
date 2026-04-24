@@ -1,0 +1,59 @@
+name: Auto Tag Version
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag-version:
+    name: Create tag from plugin version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Create version tag when plugin version changes
+        env:
+          PLUGIN_FILE: wordattach-for-cf7.php
+        run: |
+          set -euo pipefail
+
+          echo "file to check is ${PLUGIN_FILE}"
+
+          revcount=$(git rev-list --all --count)
+          if [ "${revcount}" -le 1 ]; then
+            echo "History too short"
+            exit 0
+          fi
+
+          histdiff=$(git diff --name-only HEAD HEAD~1 | grep -Fx "${PLUGIN_FILE}" || true)
+          if [ "${histdiff}" != "${PLUGIN_FILE}" ]; then
+            echo "${PLUGIN_FILE} not changed"
+            exit 0
+          fi
+
+          version=$(grep "Version:" "${PLUGIN_FILE}" | cut -d ':' -f 2 | xargs)
+          if [ -z "${version}" ]; then
+            echo "Unable to detect plugin version"
+            exit 1
+          fi
+
+          if git rev-parse -q --verify "refs/tags/${version}" >/dev/null 2>&1; then
+            echo "Tag already exists; no action taken"
+            exit 0
+          fi
+
+          echo "Creating new tag ${version}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          changeref=$(git rev-parse HEAD)
+          git tag -a "${version}" "${changeref}" -m "Release version ${version}"
+          git push origin "refs/tags/${version}"
