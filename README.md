@@ -29,10 +29,10 @@ Le direttive si inseriscono nel form di Contact Form 7 alla voce "Impostazioni a
 | `wt_lowercase:` | `wt_lowercase: [campo]` | Converte il campo in minuscolo. |
 | `wt_ucwords:` | `wt_ucwords: [campo]` | Capitalizza l'iniziale di ogni parola. |
 | `wt_ucfirst:` | `wt_ucfirst: [campo]` | Capitalizza la prima lettera della stringa. |
-| `wt_format_date:` | `wt_format_date: [campo-data]|d/m/Y` | Riformatta una data con specifica di `date()`. |
-| `wt_debug:` | `wt_debug: on|off` | Abilita il sistema di debug. |
-| `wt_debug_to:` | `wt_debug_to: log|mail|both` | Destinazione del report: log file, email admin, oppure entrambi. |
-| `wt_debug_level:` | `wt_debug_level: basic|verbose` | Livello di dettaglio (estensioni future). |
+| `wt_format_date:` | `wt_format_date: [campo-data]\|d/m/Y` | Riformatta una data con specifica di `date()`. |
+| `wt_debug:` | ``wt_debug: on/off`` | Abilita il sistema di debug. |
+| `wt_debug_to:` | `wt_debug_to: log/mail/both` | Destinazione del report: log file, email admin, oppure entrambi. |
+| `wt_debug_level:` | `wt_debug_level: basic/verbose` | Livello di dettaglio (estensioni future). |
 
 Note:
 - Ogni direttiva va su una riga distinta nelle "Impostazioni aggiuntive" del form CF7.
