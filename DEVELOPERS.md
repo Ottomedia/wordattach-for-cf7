@@ -10,7 +10,7 @@ Le release vengono taggate automaticamente da GitHub Actions tramite il workflow
 Il comportamento replica la pipeline precedente:
 - il workflow parte su `push` verso `main`
 - controlla solo il commit `HEAD` rispetto a `HEAD~1`
-- crea un tag annotato quando cambia `wordattach-for-cf7.php` e il valore di `Version:` non esiste gia' come tag Git
+- crea un tag annotato quando cambia `wordattach-for-cf7.php` e il valore di `Version:` non esiste già come tag Git
 
 Flusso operativo:
 1. Aggiorna `Version:` in `wordattach-for-cf7.php`
