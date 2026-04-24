@@ -2,7 +2,7 @@
 /*
  * Plugin Name:       Word Template Attachments for CF7
  * Description:		  Fills Word templates with form data and send them via email
- * Plugin URI:        https://bitbucket.org/ottomedia/wordattach-for-cf7/
+ * Plugin URI:        https://github.com/Ottomedia/wordattach-for-cf7/
  * Requires at least: 6.5
  * Tested up to:      6.8.3
  * Requires PHP:      8.0
@@ -18,7 +18,7 @@ function wacf7_autoload_library(){
 	require (WACF7_ABSPATH . '/plugin-update-checker/plugin-update-checker.php');
 
 	$myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-		'https://bitbucket.org/ottomedia/wordattach-for-cf7/',
+		'https://github.com/Ottomedia/wordattach-for-cf7/',
 		__FILE__,
 		'wordattach-for-cf7'
 	);
