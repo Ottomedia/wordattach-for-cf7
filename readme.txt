@@ -10,11 +10,11 @@ Il plugin permette di fare un "mail merge" dei dati di qualunque form di Contact
 
 Può essere utile per utilizzare i dati del form per compilare un modulo d'ordine, un formulario, un attesto ecc ecc.
 
-Per istruzioni su installazione, configurazione e utilizzo vai sulla [pagina README del progetto](https://bitbucket.org/ottomedia/wordattach-for-cf7/src/main/README.md)
+Per istruzioni su installazione, configurazione e utilizzo vai sulla [pagina README del progetto](https://github.com/Ottomedia/wordattach-for-cf7/blob/main/README.md)
 
 
 == Installation ==
-Per istruzioni su installazione, configurazione e utilizzo vai sulla [pagina README del progetto](https://bitbucket.org/ottomedia/wordattach-for-cf7/src/main/README.md)
+Per istruzioni su installazione, configurazione e utilizzo vai sulla [pagina README del progetto](https://github.com/Ottomedia/wordattach-for-cf7/blob/main/README.md)
 
 == Debug ==
 È possibile attivare un report di debug che va su `error_log` oppure viene accodato alla mail admin (Mail 1) di CF7.

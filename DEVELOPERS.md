@@ -7,7 +7,7 @@
 
 Le release vengono taggate automaticamente da GitHub Actions tramite il workflow `.github/workflows/auto-tag-version.yml`.
 
-Il comportamento replica la vecchia pipeline Bitbucket:
+Il comportamento replica la pipeline precedente:
 - il workflow parte su `push` verso `main`
 - controlla solo il commit `HEAD` rispetto a `HEAD~1`
 - crea un tag annotato quando cambia `wordattach-for-cf7.php` e il valore di `Version:` non esiste gia' come tag Git
